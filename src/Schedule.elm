@@ -59,5 +59,5 @@ schedule =
 humanTime : String -> Posix
 humanTime s =
   Iso8601.toTime s
-    |> Result.mapError (Debug.log ("time error " ++ s))
+    --|> Result.mapError (Debug.log ("time error " ++ s))
     |> Result.withDefault (Time.millisToPosix 0)
