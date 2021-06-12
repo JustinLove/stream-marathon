@@ -32,7 +32,7 @@ view model =
       , height fill
       , Font.color (rgb255 218 216 222)
       ] <|
-      column [ height fill, width fill, spacing 5 ]
+      column [ height fill, width fill, spacing (itemSpacing model.windowSize) ]
       [ displayHeader model
       , displaySchedule model Schedule.schedule
       , displayFooter model
@@ -44,14 +44,14 @@ displaySchedule model schedule =
   List.foldl (displaySlotAccum model) ("", []) schedule
     |> Tuple.second
     |> List.reverse
-    |> column [ width fill, height (fill |> minimum 360), spacing 5 ]
+    |> column [ width fill, height (fill |> minimum 360), spacing (itemSpacing model.windowSize) ]
 
 --displaySlotAccum : Model -> Slot -> (String, List (Element msg)) -> (String, List (Element msg))
 displaySlotAccum model slot (prior, results) =
   (dateMonthDay model.zone slot.end, (displaySlot model prior slot) :: results)
 
 --displaySlot : Model -> String -> Slot -> Element msg
-displaySlot model prior {username, start, end} =
+displaySlot model prior {username, displayname, start, end} =
   let
     startDate = dateMonthDay model.zone start
     delta = (Time.posixToMillis end) - (Time.posixToMillis start)
@@ -64,37 +64,43 @@ displaySlot model prior {username, start, end} =
     , Border.width (if inTimeRange model.time (start, end) then 5 else 0)
     ]
     [ column
-      [ width (fillPortion 1 |> minimum 100 )
+      [ width (fillPortion 1 |> minimum (columnSize model.windowSize) )
       , height fill
+      , padding 10
       , Background.color (rgb 1.0 0.733 0.208)
       , Font.color (rgb 0 0 0)
-      , Font.size (timeSize model.windowHeight)
+      , Font.size (timeSize model.windowSize)
       ]
       [ dateMonthDayHourMinute prior model.zone start
       , el [ height fill ] none
       , dateMonthDayHourMinute startDate model.zone end
       ]
     , column
-      [ width (fillPortion 5)
+      [ width (fillPortion 3)
       , alignTop
       , padding 10
-      , Font.size (nameSize model.windowHeight)
+      , Font.size (nameSize model.windowSize)
       ]
-      [ link []
-        { url = "https://twitch.tv/" ++ username
-        , label = text username
-        }
+      [ row []
+        [ icon "twitch"
+        , text " "
+        , link []
+          { url = "https://twitch.tv/" ++ username
+          , label = text displayname
+          }
+        ]
       ]
     ]
 
 displayHeader model =
   row
     [ width fill
-    , Font.size (titleSize model.windowHeight)
+    , Font.size (titleSize model.windowSize)
     ]
     [ column
-      [ width (fillPortion 1 |> minimum 100 )
+      [ width (fillPortion 1 |> minimum (columnSize model.windowSize) )
       , height fill
+      , padding 10
       , Background.color (rgb 1.0 0.733 0.208)
       , Font.color (rgb 0 0 0)
       , Font.bold
@@ -104,7 +110,7 @@ displayHeader model =
       , el [ height fill] none
       ]
     , column
-      [ width (fillPortion 5)
+      [ width (fillPortion 3)
       , padding 10
       ]
       [ text "Stream Marathon"
@@ -118,7 +124,7 @@ displayFooter model =
     , spacing 10
     , alignBottom
     , alignRight
-    , Font.size (scaled model.windowHeight -2)
+    , Font.size (scaled model.windowSize -2)
     ]
     [ {-link []
       { url = "https://github.com/JustinLove/stream-credits"
@@ -159,7 +165,7 @@ dateMonthDay zone time =
     month = Time.toMonth zone time |> formatMonth
     day = Time.toDay zone time |> String.fromInt |> String.padLeft 2 '0'
   in
-    month ++ "-" ++ day
+    month ++ " " ++ day
 
 dateHourMinute : Time.Zone -> Posix -> String
 dateHourMinute zone time =
@@ -172,36 +178,35 @@ dateHourMinute zone time =
 formatMonth : Time.Month -> String
 formatMonth month =
   case month of
-    Time.Jan -> "01"
-    Time.Feb -> "02"
-    Time.Mar -> "03"
-    Time.Apr -> "04"
-    Time.May -> "05"
-    Time.Jun -> "06"
-    Time.Jul -> "07"
-    Time.Aug -> "08"
-    Time.Sep -> "09"
-    Time.Oct -> "10"
-    Time.Nov -> "11"
-    Time.Dec -> "12"
+    Time.Jan -> "Jan"
+    Time.Feb -> "Feb"
+    Time.Mar -> "March"
+    Time.Apr -> "April"
+    Time.May -> "May"
+    Time.Jun -> "June"
+    Time.Jul -> "July"
+    Time.Aug -> "Aug"
+    Time.Sep -> "Sep"
+    Time.Oct -> "Oct"
+    Time.Nov -> "Nov"
+    Time.Dec -> "Dec"
 
-titleSize height = scaled height 3
-timeSize height = scaled height 2
-nameSize height = scaled height 2
+titleSize height = scaled height 2
+timeSize height = scaled height -1
+nameSize height = scaled height 1
+itemSpacing height = height // 100
 
-scaled height = modular (max ((toFloat height)/30) 15) 1.25 >> round
-scheduleRange =
-  let
-    first = List.head Schedule.schedule
-      |> Maybe.map .start
-      |> Maybe.withDefault (Time.millisToPosix 0)
-    last = List.head (List.reverse Schedule.schedule)
-      |> Maybe.map .end
-      |> Maybe.withDefault (Time.millisToPosix 0)
-  in
-     (first, last)
+columnSize height = (timeSize height) * 10
+
+scaled height = modular (atMost (atLeast ((toFloat height)/20) 15) 20) 1.25 >> round
 
 inTimeRange : Posix -> (Posix, Posix) -> Bool
 inTimeRange test (start, end) =
   let t = Time.posixToMillis test in
   (Time.posixToMillis start) <= t && t < (Time.posixToMillis end)
+
+atLeast : Float -> Float -> Float
+atLeast = max
+
+atMost : Float -> Float -> Float
+atMost = min

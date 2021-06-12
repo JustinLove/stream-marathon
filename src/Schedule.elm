@@ -8,6 +8,7 @@ type alias Schedule = List Slot
 
 type alias Slot =
   { username : String
+  , displayname : String
   , start : Posix
   , end : Posix
   }
@@ -19,30 +20,37 @@ schedule : List Slot
 schedule =
   [
     { username = "cartoonjessie"
+    , displayname = "CartoonJessie"
     , start = time "04"
     , end = time "08"
     }
   , { username = "persephone_awides"
+    , displayname = "Persephone_Awides"
     , start = time "08"
     , end = time "10"
     }
   , { username = "twisted_100"
+    , displayname = "Twisted_100"
     , start = time "10"
     , end = time "13"
     }
   , { username = "rainiedash"
+    , displayname = "RainieDash"
     , start = time "13"
     , end = time "17"
     }
   , { username = "secretkittykat"
+    , displayname = "secretkittykat"
     , start = time "17"
     , end = time "19"
     }
   , { username = "wondible"
+    , displayname = "wondible"
     , start = time "19"
     , end = time "21"
     }
   , { username = "angelatinelive"
+    , displayname = "AngelatineLIVE"
     , start = time "21"
     , end = time "23"
     }
