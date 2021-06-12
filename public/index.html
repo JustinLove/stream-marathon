@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>2HOL Stream Marathon</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+  body {
+    background-color: rgb(23, 20, 31);
+    color: rgb(218, 216, 222);
+  }
+  .view {
+    height: 100%;
+  }
+  svg.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.2em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+  }
+  .icon-github { color: #888; }
+  .icon-twitter { color: #55acee; }
+  .icon-twitch { color: #6441A4; }
+  a:link, a:visited { color: #b19dd8; }
+  a:hover, a:active { color: rgb(218, 216, 222); }
+  </style>
+  <script type="text/javascript" src="stream-marathon.js"></script>
+</head>
+
+<body>
+</body>
+
+<script type="text/javascript">
+var href = window.location.href
+var app = Elm.StreamMarathon.init({flags: href})
+
+if (app.ports) {
+
+  // ---------------- SelectCopy -----------------
+  if (app.ports.selectCopy) {
+    app.ports.selectCopy.subscribe(function(id) {
+      var el = document.getElementById(id)
+      el.focus()
+      el.select()
+      try {
+        if (!document.execCommand('copy')) {
+          console.warn("copy failed")
+        }
+      } catch (err) {
+        console.error("copy threw", err)
+      }
+    })
+  }
+
+  // ------------------ ObsStudio ------------------
+  if (window.obsstudio
+      && app.ports.obsStudioOnVisibilityChange) {
+    window.obsstudio.onActiveChange = function(visible) {
+      app.ports.obsStudioOnVisibilityChange.send(visible)
+    }
+  }
+
+  // ------------------ Log ------------------
+  var logCommand = function(message) {
+    switch(message.kind) {
+      case 'debug':
+        console.debug(message.note, message.value)
+        break
+      case 'log':
+        console.log(message.note)
+        break
+      case 'info':
+        console.info(message.note)
+        break
+      case 'warn':
+        console.warn(message.note)
+        break
+      case 'error':
+        console.error(message.note, message.value)
+        break
+      default:
+        console.log('unknown message', message)
+        break;
+    }
+  }
+
+  if (app.ports.logCommand) {
+    app.ports.logCommand.subscribe(logCommand)
+  }
+}
+</script>
+<script defer src="svgxuse.js"></script>
+
+</html>
+
