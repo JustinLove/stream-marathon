@@ -5,6 +5,7 @@ import Schedule exposing (Schedule, Slot)
 import Dict
 import Element exposing (..)
 import Element.Background as Background
+import Element.Border as Border
 import Element.Region as Region
 import Element.Font as Font
 import Element.Input as Input
@@ -59,6 +60,8 @@ displaySlot model prior {username, start, end} =
   row
     [ width fill
     , height (fillPortion hours)
+    , Border.color (rgb 1 1 1)
+    , Border.width (if inTimeRange model.time (start, end) then 5 else 0)
     ]
     [ column
       [ width (fillPortion 1 |> minimum 100 )
@@ -191,11 +194,14 @@ scheduleRange =
   let
     first = List.head Schedule.schedule
       |> Maybe.map .start
-      |> Maybe.map Time.posixToMillis
-      |> Maybe.withDefault 0
+      |> Maybe.withDefault (Time.millisToPosix 0)
     last = List.head (List.reverse Schedule.schedule)
       |> Maybe.map .end
-      |> Maybe.map Time.posixToMillis
-      |> Maybe.withDefault 0
+      |> Maybe.withDefault (Time.millisToPosix 0)
   in
-    last - first
+     (first, last)
+
+inTimeRange : Posix -> (Posix, Posix) -> Bool
+inTimeRange test (start, end) =
+  let t = Time.posixToMillis test in
+  (Time.posixToMillis start) <= t && t < (Time.posixToMillis end)

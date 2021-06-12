@@ -29,6 +29,7 @@ import Time exposing (Posix, Zone)
 type Msg
   = UI (View.Msg)
   | CurrentZone Zone
+  | CurrentTime Posix
   --= HttpError String Http.Error
   --| Channel (List String)
   --| Users (List User)
@@ -87,6 +88,7 @@ init href =
     --|> update (AudioStart (Time.millisToPosix 0)) |> Tuple.first
   , Cmd.batch 
     [ Task.perform CurrentZone Time.here
+    , Task.perform CurrentTime Time.now
     ]
   )
 
@@ -97,6 +99,8 @@ update msg model =
       (model, Cmd.none)
     CurrentZone zone ->
       ( {model | zone = zone}, Cmd.none)
+    CurrentTime time ->
+      ( {model | time = time}, Cmd.none)
     {-HttpError source (Http.BadStatus 401) ->
       let m2 = logout model in
       ( m2
@@ -224,9 +228,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
-  {-
   Sub.batch
+    [ Time.every (60 * 1000) CurrentTime
+    ]
+    {-
     [ if List.isEmpty model.pendingRequests then
         Sub.none
       else
