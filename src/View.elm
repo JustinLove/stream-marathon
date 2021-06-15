@@ -21,7 +21,7 @@ type alias Msg
   = Never
 
 document tagger model =
-  { title = "2HOL Stream Marathon"
+  { title = "Two Hours One Life Community Stream Marathon"
   , body = [Html.map tagger (view model)]
   }
 
@@ -104,16 +104,34 @@ displayHeader model =
       , Background.color (rgb 1.0 0.733 0.208)
       , Font.color (rgb 0 0 0)
       , Font.bold
+      , Font.size (titleSize model.windowSize)
       ]
       [ el [ height fill] none
-      , el [ width fill, Font.center ] (text "2HOL")
+      , link
+        [ width fill
+        , Font.center
+        , Font.color (rgb 0 0 0)
+        , htmlAttribute <| Html.Attributes.class "thol-link"
+        ]
+        { url = "https://twohoursonelife.com/"
+        , label = text "2HOL"
+        }
       , el [ height fill] none
       ]
     , column
       [ width (fillPortion 3)
       , padding 10
+      , spacing 4
       ]
-      [ text "Stream Marathon"
+      [ el [ Font.size (titleSize model.windowSize) ] (text "Stream Marathon")
+      , paragraph [ Font.size (textSize model.windowSize) ]
+        [ text "Can a family last 19 hours? Come watch us try - and "
+        , link [ ]
+          { url = "https://twohoursonelife.com/"
+          , label = text "join us in Two Hours One Life"
+          }
+        , text "."
+        ]
       ]
     ]
 
@@ -126,11 +144,11 @@ displayFooter model =
     , alignRight
     , Font.size (scaled model.windowSize -2)
     ]
-    [ {-link []
-      { url = "https://github.com/JustinLove/stream-credits"
-      , label = row [] [ icon "github", text "stream-credits" ]
+    [ link []
+      { url = "https://github.com/JustinLove/stream-marathon"
+      , label = row [] [ icon "github", text "stream-marathon" ]
       }
-    ,-} link []
+    , link []
       { url = "https://twitter.com/wondible"
       , label = row [] [ icon "twitter", text "@wondible" ]
       }
@@ -192,6 +210,7 @@ formatMonth month =
     Time.Dec -> "Dec"
 
 titleSize height = scaled height 2
+textSize height = scaled height -1
 timeSize height = scaled height -1
 nameSize height = scaled height 1
 itemSpacing height = height // 100
