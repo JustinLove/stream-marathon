@@ -28,9 +28,7 @@ document tagger model =
 view model = 
   Html.div [ Html.Attributes.class "view" ]
     [ layout
-      [ Background.color (rgb255 23 20 31)
-      , height fill
-      , Font.color (rgb255 218 216 222)
+      [ height fill
       ] <|
       column [ height fill, width fill, spacing (itemSpacing model.windowSize) ]
       [ displayHeader model
@@ -60,15 +58,15 @@ displaySlot model prior {username, displayname, start, end} =
   row
     [ width fill
     , height (fillPortion hours)
-    , Border.color (rgb 1 1 1)
+    , Border.color black
     , Border.width (if inTimeRange model.time (start, end) then 5 else 0)
     ]
     [ column
       [ width (fillPortion 1 |> minimum (columnSize model.windowSize) )
       , height fill
       , padding 10
-      , Background.color (rgb 1.0 0.733 0.208)
-      , Font.color (rgb 0 0 0)
+      , Background.color yellow
+      , Font.color black
       , Font.size (timeSize model.windowSize)
       ]
       [ dateMonthDayHourMinute prior model.zone start
@@ -101,8 +99,8 @@ displayHeader model =
       [ width (fillPortion 1 |> minimum (columnSize model.windowSize) )
       , height fill
       , padding 10
-      , Background.color (rgb 1.0 0.733 0.208)
-      , Font.color (rgb 0 0 0)
+      , Background.color yellow
+      , Font.color black
       , Font.bold
       , Font.size (titleSize model.windowSize)
       ]
@@ -110,7 +108,6 @@ displayHeader model =
       , link
         [ width fill
         , Font.center
-        , Font.color (rgb 0 0 0)
         , htmlAttribute <| Html.Attributes.class "thol-link"
         ]
         { url = "https://twohoursonelife.com/"
@@ -128,7 +125,7 @@ displayHeader model =
         [ text "Can a family last 19 hours? Come watch us try - and "
         , link [ ]
           { url = "https://twohoursonelife.com/"
-          , label = text "join us in Two Hours One Life"
+          , label = el [ Font.color yellow ] (text "join the family in Two Hours One Life")
           }
         , text "."
         ]
@@ -218,6 +215,10 @@ itemSpacing height = height // 100
 columnSize height = (timeSize height) * 10
 
 scaled height = modular (atMost (atLeast ((toFloat height)/20) 15) 20) 1.25 >> round
+
+black = rgb 0 0 0
+white = rgb 1 1 1
+yellow = rgb 1.0 0.733 0.208
 
 inTimeRange : Posix -> (Posix, Posix) -> Bool
 inTimeRange test (start, end) =
