@@ -1,6 +1,6 @@
 module View exposing (Msg, document, view)
 
-import Schedule exposing (Schedule, Slot)
+import Schedule exposing (Schedule, Streamer, Slot)
 
 import Dict
 import Element exposing (..)
@@ -49,7 +49,7 @@ displaySlotAccum model slot (prior, results) =
   (dateMonthDay model.zone slot.end, (displaySlot model prior slot) :: results)
 
 --displaySlot : Model -> String -> Slot -> Element msg
-displaySlot model prior {username, displayname, start, end} =
+displaySlot model prior {streamers, start, end} =
   let
     startDate = dateMonthDay model.zone start
     delta = (Time.posixToMillis end) - (Time.posixToMillis start)
@@ -77,17 +77,21 @@ displaySlot model prior {username, displayname, start, end} =
       [ width (fillPortion 3)
       , alignTop
       , padding 10
+      , spacing 5 
       , Font.size (nameSize model.windowSize)
       ]
-      [ row []
-        [ icon "twitch"
-        , text " "
-        , link []
-          { url = "https://twitch.tv/" ++ username
-          , label = text displayname
-          }
-        ]
-      ]
+      (List.map displayStreamer streamers)
+    ]
+
+displayStreamer : Streamer -> Element msg
+displayStreamer {username, displayname} =
+  row []
+    [ icon "twitch"
+    , text " "
+    , link []
+      { url = "https://twitch.tv/" ++ username
+      , label = text displayname
+      }
     ]
 
 displayHeader model =
