@@ -122,7 +122,7 @@ displayHeader model =
       ]
       [ el [ Font.size (titleSize model.windowSize) ] (text "Stream Marathon")
       , paragraph [ Font.size (textSize model.windowSize) ]
-        [ text "Can a family last 19 hours? Come watch us try - and "
+        [ text "Come watch us and "
         , link [ ]
           { url = "https://twohoursonelife.com/"
           , label = el [ Font.color yellow ] (text "join the family in Two Hours One Life")

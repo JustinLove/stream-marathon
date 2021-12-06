@@ -14,45 +14,39 @@ type alias Slot =
   }
 
 time hour =
-  humanTime ("2021-06-19T"++hour++":00:00-04:00")
+  humanTime ("2021-12-11T"++hour++":00:00-05:00")
 
 schedule : List Slot
 schedule =
-  [
-    { username = "cartoonjessie"
-    , displayname = "CartoonJessie"
-    , start = time "04"
+  [ { username = "persephone_awides"
+    , displayname = "Persephone_Awides"
+    , start = time "06"
     , end = time "08"
     }
-  , { username = "persephone_awides"
-    , displayname = "Persephone_Awides"
+  , { username = "cartoonjessie"
+    , displayname = "CartoonJessie and/or PorthosUK"
     , start = time "08"
     , end = time "10"
     }
-  , { username = "twisted_100"
-    , displayname = "Twisted_100"
+  , { username = "lizzeegames"
+    , displayname = "lizzeegames"
     , start = time "10"
-    , end = time "13"
-    }
-  , { username = "rainiedash"
-    , displayname = "RainieDash"
-    , start = time "13"
-    , end = time "17"
+    , end = time "12"
     }
   , { username = "secretkittykat"
     , displayname = "secretkittykat"
-    , start = time "17"
-    , end = time "19"
+    , start = time "12"
+    , end = time "14"
+    }
+  , { username = "joosyfine"
+    , displayname = "joosyfine"
+    , start = time "14"
+    , end = time "16"
     }
   , { username = "wondible"
     , displayname = "wondible"
-    , start = time "19"
-    , end = time "21"
-    }
-  , { username = "angelatinelive"
-    , displayname = "AngelatineLIVE"
-    , start = time "21"
-    , end = time "23"
+    , start = time "16"
+    , end = time "18"
     }
   ]
 
