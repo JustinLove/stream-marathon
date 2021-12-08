@@ -50,8 +50,8 @@ schedule =
     , end = time "12"
     }
   , { streamers =
-      [ { username = "secretkittykat"
-        , displayname = "secretkittykat"
+      [ { username = "wondible"
+        , displayname = "wondible"
         }
       ]
     , start = time "12"
@@ -66,8 +66,8 @@ schedule =
     , end = time "16"
     }
   , { streamers =
-      [ { username = "wondible"
-        , displayname = "wondible"
+      [ { username = "secretkittykat"
+        , displayname = "secretkittykat"
         }
       ]
     , start = time "16"
